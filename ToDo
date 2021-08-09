@@ -1,8 +1,6 @@
 Feito:
 -Arquivo txt alterado
--Criação dos dicts baseados nos arquivos txt e csv
 
 ToDo:
--Alterar ID do dispositivo no arquivo csv baseado no txt
 -Tratar informações do csv
 -Random Forest
