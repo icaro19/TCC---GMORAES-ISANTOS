@@ -3,6 +3,7 @@ from numpy import std
 
 import csv
 import pandas as pd
+import datetime
 
 # abre arquivo com id de cada dispositivo e sua localizacao
 d = {}
@@ -13,9 +14,8 @@ with open("id_addrs_fixo.txt") as f:
         (key, ignore, val, ig) = line.split("|")
         d[int(key)] = val
 
-print(d)
-
-# abre csv e copia para dict
+# abre csv
 X = pd.read_csv('dataset-fixo-tcc-joao.csv', index_col='ID')
-X.to_dict()
-print(X)
+
+#trata tempo na tabela
+for aux in X:
