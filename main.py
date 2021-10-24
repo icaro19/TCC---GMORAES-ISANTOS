@@ -1,4 +1,4 @@
-from randomForest import RF_TCC
+from randomForest import RF_TCC, RF_TCC_Predict, RF_TCC_TesteKFoldDifferentValues
 from numpy import mean
 from numpy import std
 
@@ -38,17 +38,6 @@ aux = {
     'device_signal': [],
     'device_id': [],
     'id_addr': []
-}
-
-fingerprints = {
-
-    'quarto1': [],
-    'quarto2': [],
-    'quarto3': [],
-    'sala': [],
-    'cozinha': [],
-    'banheiro': [],
-    'corredor': []
 }
 
 x = []
@@ -101,83 +90,46 @@ for index, (key, content) in enumerate(d.items()):
                 if contadorDeviceSignal[0] != 0:
                     mediaDeviceSignal[0] /= contadorDeviceSignal[0]
                 else:
-                    mediaDeviceSignal[0] = -99
+                    mediaDeviceSignal[0] = 0
 
                 if contadorDeviceSignal[1] != 0:
                     mediaDeviceSignal[1] /= contadorDeviceSignal[1]
                 else:
-                    mediaDeviceSignal[1] = -99
+                    mediaDeviceSignal[1] = 0
 
                 if contadorDeviceSignal[2] != 0:
                     mediaDeviceSignal[2] /= contadorDeviceSignal[2]
                 else:
-                    mediaDeviceSignal[2] = -99
+                    mediaDeviceSignal[2] = 0
 
                 if contadorDeviceSignal[3] != 0:
                     mediaDeviceSignal[3] /= contadorDeviceSignal[3]
                 else:
-                    mediaDeviceSignal[3] = -99
+                    mediaDeviceSignal[3] = 0
 
                 if contadorDeviceSignal[4] != 0:
                     mediaDeviceSignal[4] /= contadorDeviceSignal[4]
                 else:
-                    mediaDeviceSignal[4] = -99
-                
+                    mediaDeviceSignal[4] = 0
                 x.append(mediaDeviceSignal)
 
-                if d['id_addr'][index2] == 41312:
+                nomesID = {
+                            41312: 'quarto 2',
+                            41483: 'banheiro',
+                            41814: 'cozinha',
+                            41642: 'quarto 1',
+                            40553: 'corredor',
+                            41394: 'sala',
+                            40768: 'quarto 3'
+                        }
 
-                    y.append('quarto 2')
-                    #stringQuarto2 = content2 + ' quarto 2: [' + str(mediaDeviceSignal[0]) + ' ' + str(mediaDeviceSignal[1]) + ' ' + str(mediaDeviceSignal[2]) + ' ' + str(mediaDeviceSignal[3]) + ' ' + str(mediaDeviceSignal[4]) + ']'
-                    #fingerprints['quarto2'].append(stringQuarto2)
-                    #print(stringQuarto2)
-
-
-                elif d['id_addr'][index2] == 41483:
-                    
-                    y.append('banheiro')
-                    #stringBanheiro = content2 + ' banheiro: [' + str(mediaDeviceSignal[0]) + ' ' + str(mediaDeviceSignal[1]) + ' ' + str(mediaDeviceSignal[2]) + ' ' + str(mediaDeviceSignal[3]) + ' ' + str(mediaDeviceSignal[4]) + ']'
-                    #fingerprints['banheiro'].append(stringBanheiro)
-                    #print(stringBanheiro)
-
-                elif d['id_addr'][index2] == 41814:
-                   
-                    y.append('cozinha')
-                    #stringCozinha = content2 + ' cozinha: [' + str(mediaDeviceSignal[0]) + ' ' + str(mediaDeviceSignal[1]) + ' ' + str(mediaDeviceSignal[2]) + ' ' + str(mediaDeviceSignal[3]) + ' ' + str(mediaDeviceSignal[4]) + ']'
-                    #fingerprints['cozinha'].append(stringCozinha)
-                    #print(stringCozinha)
-
-                elif d['id_addr'][index2] == 41642:
-                    
-                    y.append('quarto 1')
-                    #stringQuarto1 = content2 + ' quarto 1: [' + str(mediaDeviceSignal[0]) + ' ' + str(mediaDeviceSignal[1]) + ' ' + str(mediaDeviceSignal[2]) + ' ' + str(mediaDeviceSignal[3]) + ' ' + str(mediaDeviceSignal[4]) + ']'
-                    #fingerprints['quarto1'].append(stringQuarto1)
-                    #print(stringQuarto1)
-
-                elif d['id_addr'][index2] == 40553:
-                    
-                    y.append('corredor')
-                    stringCorredor = content2 + ' corredor: [' + str(mediaDeviceSignal[0]) + ' ' + str(mediaDeviceSignal[1]) + ' ' + str(mediaDeviceSignal[2]) + ' ' + str(mediaDeviceSignal[3]) + ' ' + str(mediaDeviceSignal[4]) + ']'
-                    fingerprints['corredor'].append(stringCorredor)
-                    #print(stringCorredor)
-
-                elif d['id_addr'][index2] == 41394:
-
-                    y.append('sala')
-                    #stringSala = content2 + ' sala: [' + str(mediaDeviceSignal[0]) + ' ' + str(mediaDeviceSignal[1]) + ' ' + str(mediaDeviceSignal[2]) + ' ' + str(mediaDeviceSignal[3]) + ' ' + str(mediaDeviceSignal[4]) + ']'
-                    #fingerprints['sala'].append(stringSala)
-                    #print(stringSala)
-
-                elif d['id_addr'][index2] == 40768:
-
-                    y.append('quarto 3')
-                    #stringQuarto3 = content2 + ' quarto 3: [' + str(mediaDeviceSignal[0]) + ' ' + str(mediaDeviceSignal[1]) + ' ' + str(mediaDeviceSignal[2]) + ' ' + str(mediaDeviceSignal[3]) + ' ' + str(mediaDeviceSignal[4]) + ']'
-                    #fingerprints['quarto3'].append(stringQuarto3)
-                    #print(stringQuarto3)
-                
+                y.append(nomesID[d['id_addr'][index2]])
+            
                 mediaDeviceSignal = [0] * 5
                 contadorDeviceSignal = [0] * 5
+            
+            contador = 1
 
-                contador = 1
-
-RF_TCC(x, y)
+#modelo do vetor de sinal: sala, quarto 1, quarto 2, serviço, cozinha
+#RF_TCC(x, y)
+RF_TCC_TesteKFoldDifferentValues(x, y)
