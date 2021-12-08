@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import confusion_matrix
 
 def RF_TCC_Predict(model, x_treino, y_treino, x_teste, y_teste):
    
@@ -22,10 +23,13 @@ def RF_TCC_DifferentTrainSizesPredict(x, y):
 
     medidas = []
     stringMedidas = []
+    stringMatrizes = []
     accuracy = []
 
+    f = open("metrics.txt", "w+")
+
     #obtendo os melhores hiper-parâmetros para o nosso modelo
-    best_hyperparams = RF_TCC_FindBestParams(x, y)
+    best_hyperparams, stringAcc = RF_TCC_FindBestParams(x, y)
 
     #criando o modelo com os hiper-parâmetros obtidos
     model = RandomForestClassifier(n_estimators = best_hyperparams['n_estimators'],
@@ -36,6 +40,8 @@ def RF_TCC_DifferentTrainSizesPredict(x, y):
                                    max_features = best_hyperparams['max_features']
                                    )
 
+    labels = ['banheiro', 'corredor', 'cozinha', 'quarto 1', 'quarto 2', 'quarto 3', 'sala']
+
     #gerando o treino e teste básicos
     x_treino, x_teste, y_treino, y_teste = train_test_split(x, y, test_size = 0.3)
 
@@ -45,13 +51,17 @@ def RF_TCC_DifferentTrainSizesPredict(x, y):
     resultado1percent = model.predict(x_teste)
     medidas.append(classification_report(y_teste, resultado1percent, output_dict = True))
     stringMedidas.append(classification_report(y_teste, resultado1percent))
-    
+    cm1percent = confusion_matrix(y_teste, resultado1percent, labels = labels)
+    stringMatrizes.append('Confusion matrix with 1% [of D_Treino]:' + '\n' + str(cm1percent) + '\n\n')
+
     #gerando um conjunto de 2% do treino
     x_treino2percent, x_testeDescartável, y_treino2percent, y_testeDescartável = train_test_split(x_treino, y_treino, train_size = 0.02, shuffle = False, stratify = None)
     model.fit(x_treino2percent, y_treino2percent)
     resultado2percent = model.predict(x_teste)
     medidas.append(classification_report(y_teste, resultado2percent, output_dict = True))
     stringMedidas.append(classification_report(y_teste, resultado2percent))
+    cm2percent = confusion_matrix(y_teste, resultado2percent, labels = labels)
+    stringMatrizes.append('Confusion matrix with 2%: [of D_Treino]' + '\n' + str(cm2percent) + '\n\n')
 
     #gerando um conjunto de 5% do treino
     x_treino5percent, x_testeDescartável, y_treino5percent, y_testeDescartável = train_test_split(x_treino, y_treino, train_size = 0.05, shuffle = False, stratify = None)
@@ -59,6 +69,8 @@ def RF_TCC_DifferentTrainSizesPredict(x, y):
     resultado5percent = model.predict(x_teste)
     medidas.append(classification_report(y_teste, resultado5percent, output_dict = True))
     stringMedidas.append(classification_report(y_teste, resultado5percent))
+    cm5percent = confusion_matrix(y_teste, resultado5percent, labels = labels)
+    stringMatrizes.append('Confusion matrix with 5% [of D_Treino]:' + '\n' + str(cm5percent) + '\n\n')
 
     #gerando um conjunto de 10% do treino
     x_treino10percent, x_testeDescartável, y_treino10percent, y_testeDescartável = train_test_split(x_treino, y_treino, train_size = 0.1, shuffle = False, stratify = None)
@@ -66,6 +78,8 @@ def RF_TCC_DifferentTrainSizesPredict(x, y):
     resultado10percent = model.predict(x_teste)
     medidas.append(classification_report(y_teste, resultado10percent, output_dict = True))
     stringMedidas.append(classification_report(y_teste, resultado10percent))
+    cm10percent = confusion_matrix(y_teste, resultado10percent, labels = labels)
+    stringMatrizes.append('Confusion matrix with 10% [of D_Treino]:' + '\n' + str(cm10percent) + '\n\n')
 
     #gerando um conjunto de 25% do treino           
     x_treino25percent, x_testeDescartável, y_treino25percent, y_testeDescartável = train_test_split(x_treino, y_treino, train_size = 0.25, shuffle = False, stratify = None)
@@ -73,6 +87,8 @@ def RF_TCC_DifferentTrainSizesPredict(x, y):
     resultado25percent = model.predict(x_teste)
     medidas.append(classification_report(y_teste, resultado25percent, output_dict = True))
     stringMedidas.append(classification_report(y_teste, resultado25percent))
+    cm25percent = confusion_matrix(y_teste, resultado25percent, labels = labels)
+    stringMatrizes.append('Confusion matrix with 25% [of D_Treino]:' + '\n' + str(cm25percent) + '\n\n')
 
     #gerando um conjunto de 50% do treino
     x_treino50percent, x_testeDescartável, y_treino50percent, y_testeDescartável = train_test_split(x_treino, y_treino, train_size = 0.50, shuffle = False, stratify = None)
@@ -80,6 +96,8 @@ def RF_TCC_DifferentTrainSizesPredict(x, y):
     resultado50percent = model.predict(x_teste)
     medidas.append(classification_report(y_teste, resultado50percent, output_dict = True))
     stringMedidas.append(classification_report(y_teste, resultado50percent))
+    cm50percent = confusion_matrix(y_teste, resultado50percent, labels = labels)
+    stringMatrizes.append('Confusion matrix with 50% [of D_Treino]:' + '\n' + str(cm50percent) + '\n\n')
 
     #gerando um conjunto de 75% do treino
     x_treino75percent, x_testeDescartável, y_treino75percent, y_testeDescartável = train_test_split(x_treino, y_treino, train_size = 0.75, shuffle = False, stratify = None)
@@ -87,12 +105,17 @@ def RF_TCC_DifferentTrainSizesPredict(x, y):
     resultado75percent = model.predict(x_teste)
     medidas.append(classification_report(y_teste, resultado75percent, output_dict = True))
     stringMedidas.append(classification_report(y_teste, resultado75percent))
+    cm75percent = confusion_matrix(y_teste, resultado75percent, labels = labels)
+    stringMatrizes.append('Confusion matrix with 75% [of D_Treino]:' + '\n' + str(cm75percent) + '\n\n')
 
     #rodando o modelo com 100% do treino
     model.fit(x_treino, y_treino)
     resultado100percent = model.predict(x_teste)
     medidas.append(classification_report(y_teste, resultado100percent, output_dict = True))
     stringMedidas.append(classification_report(y_teste, resultado100percent))
+    cm100percent = confusion_matrix(y_teste, resultado100percent, labels = labels)
+    stringMatrizes.append('Confusion matrix with 100% [of D_Treino]:' + '\n' + str(cm100percent) + '\n\n')
+
 
     indexSizeTest = {0: 1,
                      1: 2,
@@ -104,15 +127,23 @@ def RF_TCC_DifferentTrainSizesPredict(x, y):
                      7: 100
                     }
 
+    for i in range(len(stringAcc)):
+        f.write(stringAcc[i])
+
+    for i in range(len(stringMatrizes)):
+        f.write(stringMatrizes[i])
+
     for i in range(len(medidas)):
-        
         accuracy.append(medidas[i]['accuracy'])
-        print('Model scores with ', indexSizeTest[i], '%', 'of whole train dataset:\n' ,stringMedidas[i])
+        f.write('Model scores with ' + str(indexSizeTest[i]) + '%' + ' of whole train dataset:\n' + str(stringMedidas[i]) + '\n')
 
     RF_TCC_CreateGraph([1, 2, 5, 10, 25, 50, 75, 100], accuracy, 'tamanho do conjunto de teste (%)', 'Acurácia (porção decimal)')
-        
+
+    f.close()
+
 def RF_TCC_FindBestParams(x, y):
 
+    stringAcc = []
 
     print('Generating best set of hyperparameters for the model. . .')
     n_estimators = [int(x) for x in np.linspace(start = 5, stop = 100, num = 10)]
@@ -143,10 +174,16 @@ def RF_TCC_FindBestParams(x, y):
     
     rf_grid.fit(x_treino, y_treino)
 
-    print('Best set of hyperparameters obtained: ', rf_grid.best_params_) 
-    print('Accuracy obtained: ', "{:.2f}".format(rf_grid.best_score_))
+    str1 = 'Best set of hyperparameters obtained: ' + str(rf_grid.best_params_) + '\n'
+    str2 = 'Accuracy obtained: ' + "{:.2f}".format(rf_grid.best_score_) + '\n\n'
+    
+    print(str1) 
+    print(str2)
 
-    return(rf_grid.best_params_)
+    stringAcc.append(str1)
+    stringAcc.append(str2)
+
+    return(rf_grid.best_params_, stringAcc)
 
 def RF_TCC_CreateGraph(x, y, x_name, y_name):
 
@@ -160,4 +197,6 @@ def RF_TCC_CreateGraph(x, y, x_name, y_name):
     plt.ylim([0.5, 1.0])
     plt.xticks(default_x_ticks, x)
 
-    plt.show()
+    plt.savefig('acuraciaTamanhoConjuntoTreinos.png')
+
+    plt.close()
