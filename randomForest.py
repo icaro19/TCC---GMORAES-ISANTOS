@@ -295,12 +295,7 @@ def RF_TCC_PredictMeans(x, y, tipo):
 
             f.write(str(key) + ': ' + str(medidas[i][key]) + '\n')
 
-    
-
     RF_TCC_CreateGraph([1, 2, 5, 10, 25, 50, 75, 100], accuracy, 'tamanho do conjunto de treino (%)', 'Acurácia (porção decimal)', tipoGrafico[tipo])
-
-    f.write(str(cm1percent))
-    f.write(str(resultado1percent))
 
     f.close()
 
