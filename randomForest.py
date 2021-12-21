@@ -172,9 +172,10 @@ def RF_TCC_GenerateReports(x_treino, y_treino, x_teste, y_teste, size, model):
                             'accuracy': 0
                          }
 
+    model.fit(x_treino, y_treino)
+
     for _ in range(10):
 
-        model.fit(x_treino, y_treino)
         resultado = model.predict(x_teste)
         report = classification_report(y_teste, resultado, output_dict = True)
 
@@ -186,11 +187,22 @@ def RF_TCC_GenerateReports(x_treino, y_treino, x_teste, y_teste, size, model):
 
                     if label in labels:
 
-                        metricasMediasDict[label][metricas] += (dictValores[metricas]/10)
-                
-            
-        metricasMediasDict['accuracy'] += ( report['accuracy'] / 10)
+                        metricasMediasDict[label][metricas] += (dictValores[metricas] / 10)
+
+        metricasMediasDict['accuracy'] += (report['accuracy'] / 10)
         
+        for label, dictValores in report.items():
+
+            if isinstance(dictValores, dict):
+
+                for metricas in dictValores:
+
+                    if label in labels:
+
+                        metricasMediasDict[label][metricas] = float("{:.4f}".format(metricasMediasDict[label][metricas]))
+
+        metricasMediasDict['accuracy'] = float("{:.4f}".format(metricasMediasDict['accuracy']))
+
         cm += confusion_matrix(y_teste, resultado, labels = labels)
 
         cm = np.around(cm, 2)
@@ -198,7 +210,7 @@ def RF_TCC_GenerateReports(x_treino, y_treino, x_teste, y_teste, size, model):
     cm /= 10
 
     cm = cm.tolist()
-
+    
     return metricasMediasDict, cm
 
 def RF_TCC_PredictMeans(x, y, tipo):
